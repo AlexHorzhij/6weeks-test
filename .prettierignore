@@ -1,0 +1,15 @@
+# Build artifacts
+dist/
+build/
+node_modules/
+
+# Config files
+package-lock.json
+.prettierrc
+.eslintrc.cjs
+eslint.config.js
+
+# Others
+.vscode/
+public/
+*.md
