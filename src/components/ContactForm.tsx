@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { User, MessageSquare, Send, CheckCircle2, Loader2, Mail } from "lucide-react";
-import { Button, Input, Textarea, Label } from "@/components/ui";
+import { Button, Input, Textarea, FormField } from "@/components/ui";
 import { contactSchema } from "@/lib/contactSchema";
 import type { ContactFormData } from "@/type";
 
@@ -54,84 +54,89 @@ export function ContactForm() {
     }
   };
 
+  const renderButtonContent = () => {
+    if (isSubmitting) {
+      return (
+        <>
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          Відправляємо...
+        </>
+      );
+    }
+
+    if (isSuccess) {
+      return (
+        <>
+          <CheckCircle2 className="mr-2 h-4 w-4" />
+          Відправлено!
+        </>
+      );
+    }
+
+    return (
+      <>
+        <Send className="mr-2 h-4 w-4" />
+        Відправити
+      </>
+    );
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div className="space-y-2 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-        <Label
-          htmlFor="name"
-          className="flex items-center gap-2 text-sm font-medium text-foreground"
-        >
-          <User className="h-4 w-4 text-primary" />
-          Ім'я
-          <span className="text-muted-foreground text-xs">(необов'язково)</span>
-        </Label>
-        <div className="relative">
-          <Input
-            id="name"
-            type="text"
-            placeholder="Ваше ім'я"
-            className="pl-4 h-12 bg-card border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200"
-            {...register("name")}
-          />
-        </div>
-        {errors.name && (
-          <p className="text-sm text-destructive flex items-center gap-1 animate-slide-in">
-            {errors.name.message}
-          </p>
-        )}
-      </div>
+      <FormField
+        id="name"
+        label="Ім'я"
+        icon={User}
+        optional
+        error={errors.name?.message}
+        delay="0.1s"
+      >
+        <Input
+          id="name"
+          type="text"
+          placeholder="Ваше ім'я"
+          variant="premium"
+          error={!!errors.name}
+          {...register("name")}
+        />
+      </FormField>
 
-      <div className="space-y-2 animate-fade-in" style={{ animationDelay: "0.2s" }}>
-        <Label
-          htmlFor="email"
-          className="flex items-center gap-2 text-sm font-medium text-foreground"
-        >
-          <Mail className="h-4 w-4 text-primary" />
-          Email
-          <span className="text-destructive">*</span>
-        </Label>
-        <div className="relative">
-          <Input
-            id="email"
-            type="email"
-            placeholder="your@email.com"
-            className={`pl-4 h-12 bg-card border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 ${
-              errors.email
-                ? "border-destructive focus:border-destructive focus:ring-destructive/20"
-                : ""
-            }`}
-            {...register("email")}
-          />
-        </div>
-        {errors.email && (
-          <p className="text-sm text-destructive flex items-center gap-1 animate-slide-in">
-            {errors.email.message}
-          </p>
-        )}
-      </div>
+      <FormField
+        id="email"
+        label="Email"
+        icon={Mail}
+        required
+        error={errors.email?.message}
+        delay="0.2s"
+      >
+        <Input
+          id="email"
+          type="email"
+          placeholder="your@email.com"
+          variant="premium"
+          error={!!errors.email}
+          {...register("email")}
+        />
+      </FormField>
 
-      <div className="space-y-2 animate-fade-in" style={{ animationDelay: "0.3s" }}>
-        <Label
-          htmlFor="message"
-          className="flex items-center gap-2 text-sm font-medium text-foreground"
-        >
-          <MessageSquare className="h-4 w-4 text-primary" />
-          Повідомлення
-          <span className="text-muted-foreground text-xs">(необов'язково)</span>
-        </Label>
+      <FormField
+        id="message"
+        label="Повідомлення"
+        icon={MessageSquare}
+        optional
+        error={errors.message?.message}
+        delay="0.3s"
+      >
         <Textarea
           id="message"
           placeholder="Ваше повідомлення..."
+          variant="premium"
+          error={!!errors.message}
           rows={4}
-          className="bg-card border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 resize-none"
+          className="resize-none"
           {...register("message")}
         />
-        {errors.message && (
-          <p className="text-sm text-destructive flex items-center gap-1 animate-slide-in">
-            {errors.message.message}
-          </p>
-        )}
-      </div>
+      </FormField>
 
       <div className="pt-2 animate-fade-in" style={{ animationDelay: "0.4s" }}>
         <Button
@@ -139,24 +144,10 @@ export function ContactForm() {
           disabled={isSubmitting || isSuccess}
           className="w-full h-12 bg-gradient-primary hover:opacity-90 text-primary-foreground font-medium shadow-glow transition-all duration-300 disabled:opacity-70"
         >
-          {isSubmitting ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Відправляємо...
-            </>
-          ) : isSuccess ? (
-            <>
-              <CheckCircle2 className="mr-2 h-4 w-4" />
-              Відправлено!
-            </>
-          ) : (
-            <>
-              <Send className="mr-2 h-4 w-4" />
-              Відправити
-            </>
-          )}
+          {renderButtonContent()}
         </Button>
       </div>
     </form>
   );
 }
+
