@@ -8,7 +8,6 @@ import { contactSchema } from "@/lib/contactSchema";
 import type { ContactFormData } from "@/type";
 
 const WEBHOOK_URL = import.meta.env.VITE_WEBHOOK_URL;
-console.log('WEBHOOK_URL', WEBHOOK_URL);
 
 export function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -39,7 +38,6 @@ export function ContactForm() {
         },
         body: JSON.stringify(data),
       });
-      console.log('response', response);
 
       if (!response.ok) {
         toast.error("Не вдалося відправити повідомлення. Спробуйте пізніше.");
